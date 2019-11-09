@@ -20,9 +20,18 @@ let group = {
 
             response.send({status: 200, message: 'Group created succesfully', res: addGroupRes})
         } catch (err) {
-            response.send({status: 500, message: 'Create group failed', res: err})
+            response.status(500).send('Create group failed')
         }
-    }
+    },
+    listGroup: async (req, response) => {
+        try {
+            let groupList = await groupMdl.find();
+
+            response.send({status: 200, message: 'Success', res: groupList})
+        } catch (err) {
+            response.status(500).send('Get groups failed')
+        }
+    },
 }
 
 

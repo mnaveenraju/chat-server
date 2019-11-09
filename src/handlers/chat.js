@@ -16,11 +16,11 @@ let chat = {
             };
 
             if(body.userId) {
-                addMsgData.userId = body.userId;
+                addMsgData.toUser = body.userId;
             }
 
             else if(body.groupId) {
-                addMsgData.groupId = body.groupId;
+                addMsgData.toGroup = body.groupId;
             }
 
             const msg = new chatMdl(addMsgData)
@@ -36,7 +36,7 @@ let chat = {
 
             response.send({status: 200, message: 'Message sent succesfully', res: addMsgRes})
         } catch (err) {
-            response.send({status: 500, message: 'Message sending failed', res: err})
+            response.status(500).send('Message sending failed');
         }
     },
 
@@ -52,10 +52,33 @@ let chat = {
                     path: 'messages'
                 }
                 });
-            ///let messages = await chatMdl.find({$or: [{userId: user._id}, {groupId: {$in: user.groups}}]})
+            ///let messages = await chatMdl.find({$or: [{toUser: user._id}, {toGroup: {$in: user.groups}}]})
             response.send({status: 200, message: 'Success', res: user})
         } catch (err) {
-            response.send({status: 500, message: 'Get user failed', res: err})
+            response.status(500).send('Get messages failed');
+        }
+    },
+
+    getUserMsgs: async (req, response) => {
+        try {
+            const body = req.body;
+            let userId = req.user.userId;
+            let toId = body.toId;
+            let msgs;
+            if (body.chatType=='group') {
+                msgs = await groupMdl.findById(body.toId).sort({sentOn: 1})
+                .populate('messages')
+            } else {
+               msgs = await chatMdl.find({fromId: userId, toUser: toId}).sort({sentOn: 1})
+                .populate({
+                    path: 'toUser',
+                    select: {'firstName': 1, lastName: 1}
+                    });
+            }
+            ///let messages = await chatMdl.find({$or: [{toUser: user._id}, {toGroup: {$in: user.groups}}]})
+            response.send({status: 200, message: 'Success', res: msgs})
+        } catch (err) {
+            response.status(500).send('Get messages failed');
         }
     }
 

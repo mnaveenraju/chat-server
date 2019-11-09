@@ -9,11 +9,11 @@ let chatSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    userId: {
+    toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    groupId: {
+    toGroup: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'group'
     },

@@ -19,7 +19,7 @@ let user = {
             delete addUserRes.password;
             response.send({status: 200, message: 'User added succesfully', res: addUserRes})
         } catch (err) {
-            response.send({status: 500, message: 'Crete user failed', res: err})
+            response.status(500).send('Create user failed')
         }
     },
 
@@ -30,7 +30,7 @@ let user = {
 
             response.send({status: 200, message: 'Success', res: user})
         } catch (err) {
-            response.send({status: 500, message: 'Get user failed', res: err})
+            response.status(500).send('Get user failed')
         }
     },
 
@@ -40,7 +40,7 @@ let user = {
 
             response.send({status: 200, message: 'Success', res: userList})
         } catch (err) {
-            response.send({status: 500, message: 'Get user failed', res: err})
+            response.status(500).send('Get user failed')
         }
     },
 
@@ -55,14 +55,15 @@ let user = {
                 const loginres = {
                     token: token,
                     firstName: user.firstName,
-                    lastName: user.lastName
+                    lastName: user.lastName,
+                    id: user._id
                 };
                 response.send({status: 200, message: 'Logged in success', res: loginres})
             } else {
-                response.send({status: 500, message: 'Username not registered'})
+                response.status(404).send('User not registered')
             }
         } catch (err) {
-            response.send({status: 500, message: 'Login user failed', res: err})
+            response.status(500).send('Login user failed')
         }
     }
 
